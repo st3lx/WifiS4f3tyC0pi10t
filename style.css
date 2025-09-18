@@ -1,0 +1,87 @@
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+    background-color: #4a697d;
+    color: #333;
+}
+
+header, main, footer {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 22px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+h1{
+  font-size: 2.8rem; /* Increases the base paragraph size */
+  font-weight: 600;
+}
+h2{
+  font-size: 2rem; /* Increases the base paragraph size */
+  font-weight: 400;
+}
+h3{
+  font-size: 2rem; /* Increases the base paragraph size */
+  font-weight: 800;
+  font-family: "Courier New", Courier, monospace;
+
+}
+button {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+
+p {
+  font-size: 1.2rem; /* Increases the base paragraph size */
+  font-weight: 400;
+}
+
+#phase-navigation {
+  margin: 20px 0;
+  text-align: center;
+}
+
+.phase-btn {
+  background-color: #125892;
+  margin: 5px;
+  padding: 10px 20px;
+  font-size: 20px;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+}
+
+.phase-btn:hover {
+  background-color: #1976D2;
+}
+
+.command-box {
+    background-color: #eee;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
+    display: block;
+    font-family: monospace;
+    margin: 10px 0;
+}
+
+#script-output {
+    width: 100%;
+    font-family: monospace;
+    padding: 10px;
+    box-sizing: border-box;
+}

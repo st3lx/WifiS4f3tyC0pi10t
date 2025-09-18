@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wifi Safety Copilot</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Wifi Safety Copilot</h1>
+        <p>Are you afraid that hackers will see everything you do online, infect your devices, or even lock you out? Insecure wifi gives an attacker full control of your network, allowing them to do these. <br> <br>
+       Is your home Wi-Fi secure? Let's find out and fix it together.</p>
+    </header>
+
+    <main>
+
+<section id="intro">
+  <p>
+    This simple tool will guide you through checking your router for 
+    <b>common security problems</b> and provide 
+    <b>clear, actionable solutions</b>. 
+    <b>No technical skills needed!</b><br><br>
+  </p>
+  <button id="startButton">Start Guided Security Checkup</button>
+  <br><br>
+  <p style="text-align: center; font-size: 1rem; color: #666;">--- or ---</p>
+  <button id="startScriptButton">Advanced: Auto-Detect with Script</button>
+  <p style="font-size: 1rem;"><small>For more technical users. You'll run a simple script on your computer to automatically gather information.</small></p>
+</section>
+
+<section id="phase-navigation" style="display:none;">
+  <button class="phase-btn" data-phase="1">Phase 1: Immediate & Critical Threats</button> <br>
+  <button class="phase-btn" data-phase="2">Phase 2: Network Configuration Risks</button> <br>
+  <button class="phase-btn" data-phase="3">Phase 3: Advanced & Persistent Threats</button>
+</section>
+
+<section id="checkup-steps" style="display:none;">
+  <!-- Dynamic content goes here -->
+</section>
+
+        <!-- We will add more sections for the checkup steps here later -->
+        <section id="checkup-steps" style="display: none;">
+            <!-- Content will be loaded by script.js -->
+        </section>
+
+        <section id="script-results" style="display: none;">
+            <!-- This section will be shown for the script-based path -->
+            <h2>Automatic Detection</h2>
+            <p>Follow these steps:</p>
+            <ol>
+                <li>Copy the command below for your operating system.</li>
+                <li>Paste it into your <strong>Terminal</strong> (Mac/Linux) or <strong>Command Prompt</strong> (Windows) and press Enter.</li>
+                <li>Copy the entire text output that the command generates.</li>
+                <li>Paste it into the text area below and click "Analyze Results".</li>
+            </ol>
+
+            <div id="script-commands">
+                <h4>For Windows (Powershell):</h4>
+                <code class="command-box">irm https://raw.githubusercontent.com/st3lx/WifiS4f3tyC0pi10t/main/scripts/scan.ps1 | iex</code>
+                <button onclick="copyCommand(this.previousElementSibling)">Copy</button>
+
+                <h4>For Mac/Linux (Terminal):</h4>
+                <code class="command-box">curl -s https://raw.githubusercontent.com/st3lx/WifiS4f3tyC0pi10t/main/scripts/scan.sh | bash</code>
+                <button onclick="copyCommand(this.previousElementSibling)">Copy</button>
+            </div>
+
+            <br>
+            <textarea id="script-output" placeholder="Paste the output from the script here..." rows="10" cols="80"></textarea>
+            <br>
+            <button onclick="analyzeScriptOutput()">Analyze Results</button>
+
+            <div id="script-analysis-result"></div>
+        </section>
+
+        <section id="results" style="display: none;">
+            <!-- Final report will be shown here -->
+        </section>
+    </main>
+
+    <footer>
+        <p><strong>Disclaimer:</strong> Use this tool only on networks you own or have permission to test. <br>
+This checkup looks for common configuration weaknesses that make hacking easy. It does not monitor live network traffic and cannot tell you if a hacker is actively attacking you right now. For real-time monitoring, consider professional Intrusion Detection Systems (IDS).</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
