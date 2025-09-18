@@ -3,7 +3,7 @@
 A web-based guide to auditing your home router's security for weak WPA settings, default passwords, and open ports. Useful for students or families who may not realize their home Wi-Fi is insecure.
 
 **Description**
-WiFi Guard is an educational, privacy-focused web tool designed for non-technical users. It performs a guided checkup of a user's local network security by asking simple questions and helping them locate information on their router. Unlike complex command-line tools, WiFi Guard translates technical risks into plain language and provides clear, actionable solutions to help everyone achieve a basic level of network safety.
+WiFi Safety Copilot is an educational, privacy-focused web tool designed for non-technical users. It performs a guided checkup of a user's local network security by asking simple questions and helping them locate information on their router. Unlike complex command-line tools, WiFi Guard translates technical risks into plain language and provides clear, actionable solutions to help everyone achieve a basic level of network safety.
 
 **Key Features**
 🛡️ Security Awareness: Educates users on the risks of weak WPA settings, default credentials, and exposed router ports.  
