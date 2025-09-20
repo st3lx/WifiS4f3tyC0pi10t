@@ -876,52 +876,8 @@ function showExternalSearchOptions(model, resultDiv) {
         }
     }
 
-    // Add this to script.js to create a more automated detection system
-window.autoDetectRouter = function() {
-    // Try to automatically detect router information
-    const gateway = detectGateway();
-    if (gateway) {
-        // Try to identify router model via UPnP or common admin page scraping
-        identifyRouterModel(gateway).then(model => {
-            document.getElementById('routerModelInput').value = model;
-            checkDefaultPassword();
-        });
-    }
-};
 
-function detectGateway() {
-    // Implementation to automatically detect gateway IP
-    // Could use WebRTC or other techniques that work in browsers
-    return null; // Placeholder
-}
 
-async function identifyRouterModel(gateway) {
-    try {
-        // Try to fetch the router login page and extract identifying information
-        const response = await fetch(`http://${gateway}`, {mode: 'no-cors'});
-        // Parse HTML for router model clues (title, meta tags, etc.)
-        return "Detected Router Model"; // Placeholder
-    } catch (e) {
-        return "Unknown (Check manually)";
-    }
-}
-
-// Add limited local network scanning capabilities
-window.scanLocalNetwork = function() {
-    // Scan for devices on the local network using available techniques
-    const ipBase = getLocalIPBase();
-    if (ipBase) {
-        scanIPRange(ipBase, 1, 254).then(devices => {
-            displayNetworkDevices(devices);
-        });
-    }
-};
-
-function getLocalIPBase() {
-    // Get the local IP base (e.g., 192.168.1.x)
-    // This is challenging in browsers but possible with WebRTC in some cases
-    return null;
-}
     // Helper for Guest Network Assessment
     window.assessGuestNetwork = function(status) {
         const resultDiv = document.getElementById('guestNetworkResult');
@@ -1074,6 +1030,38 @@ window.analyzeScriptOutput = function() {
             } else if (unknownFound) {
                 html += `<p>Unknown DNS servers should be verified. Only use DNS servers from trusted providers.</p>`;
             }
+             // Phase 1: Critical Threats
+    if (data.openPorts && data.openPorts.length > 0) {
+        html += criticalAlert("Remote Management Enabled", "Ports " + data.openPorts.join(', ') + " are open to the internet");
+    }
+    
+    if (data.routerHttpAccess === 'accessible' && data.routerHttpsAccess !== 'accessible') {
+        html += criticalAlert("Unencrypted Admin Access", "Router admin accessible via HTTP only");
+    }
+    
+    if (data.wifiEncryption && (data.wifiEncryption.includes('WEP') || data.wifiEncryption.includes('Open'))) {
+        html += criticalAlert("Weak Encryption", data.wifiEncryption + " encryption is vulnerable");
+    }
+
+    // Phase 2: Configuration Risks
+    if (data.wpsStatus && data.wpsStatus.includes('Enabled')) {
+        html += warningAlert("WPS Enabled", "Wi-Fi Protected Setup is active and vulnerable");
+    }
+    
+    if (data.upnpStatus && data.upnpStatus.includes('detected')) {
+        html += warningAlert("UPnP Active", "Universal Plug and Play may expose security risks");
+    }
+    
+    if (data.dnsServers && isSuspiciousDns(data.dnsServers)) {
+        html += warningAlert("Suspicious DNS", "DNS servers may be hijacked: " + data.dnsServers);}
+
+    // Phase 3: Advanced Threats
+    if (data.guestNetworkDetected && data.guestNetworkDetected.includes('Not detectable')) {
+        html += infoAlert("Guest Network", "Consider setting up an isolated guest network");
+    }
+    
+    // Firmware check (simulated)
+    html += warningAlert("Firmware Update", "Always check for router firmware updates manually");
         }
         
         html += `</div>`;
@@ -1111,6 +1099,7 @@ window.analyzeScriptOutput = function() {
                 html += `<li><b>URGENT:</b> Change your DNS settings to use trusted servers like Google (8.8.8.8) or Cloudflare (1.1.1.1).</li>`;
             }
         }
+        
 
         html += `<li><b>Complete the audit:</b> Log into your router at <code>${data.gateway || '192.168.1.1'}</code> to check for default passwords and other settings this scan can't see.</li>`;
         html += `</ul>`;
@@ -1126,7 +1115,22 @@ window.analyzeScriptOutput = function() {
     }
 }
 
+function criticalAlert(title, message) {
+    return `<div class="alert critical"><h4>🔴 CRITICAL: ${title}</h4><p>${message}</p></div>`;
+}
 
+function warningAlert(title, message) {
+    return `<div class="alert warning"><h4>🟠 WARNING: ${title}</h4><p>${message}</p></div>`;
+}
+
+function infoAlert(title, message) {
+    return `<div class="alert info"><h4>🟡 INFO: ${title}</h4><p>${message}</p></div>`;
+}
+
+function isSuspiciousDns(dnsString) {
+    const suspiciousPatterns = [/^10\./, /^192\.168\./, /^172\.(1[6-9]|2[0-9]|3[0-1])\./, /^100\./];
+    return suspiciousPatterns.some(pattern => pattern.test(dnsString));
+}
 
     // New function to simulate a more thorough public IP check
     window.checkPublicIp = function(ip) {

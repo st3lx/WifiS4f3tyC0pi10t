@@ -122,6 +122,20 @@ $openPortsJson = if ($openPorts.Count -gt 0) {
     "[]" 
 }
 
+# Check for WPS status
+$wpsStatus = "Unknown"
+try {
+    $wpsStatus = (netsh wlan show interfaces | Select-String "WPS" | Out-String)
+    if (-not $wpsStatus) { $wpsStatus = "Not detectable" }
+} catch { $wpsStatus = "Error checking" }
+
+# Check for UPnP status
+$upnpStatus = "Unknown"
+try {
+    $upnpStatus = (Get-NetUPnPDevice 2>$null | Measure-Object).Count
+    if ($upnpStatus -eq 0) { $upnpStatus = "None detected" }
+} catch { $upnpStatus = "Error checking" }
+
 # 8. Get system information
 $os = "Unknown"
 $osVersion = "Unknown"
@@ -162,6 +176,9 @@ $result = [PSCustomObject]@{
     operatingSystem = $os
     osVersion = $osVersion
 }
+$result | Add-Member -NotePropertyName "wpsStatus" -NotePropertyValue $wpsStatus
+$result | Add-Member -NotePropertyName "upnpStatus" -NotePropertyValue $upnpStatus
+$result | Add-Member -NotePropertyName "timestamp" -NotePropertyValue (Get-Date -Format "yyyy-MM-dd_HH:mm:ss")
 
 # Output the result as JSON
 $result | ConvertTo-Json

@@ -72,6 +72,23 @@ else
 CONNECTION_TYPE="Ethernet"
 fi
 
+# Check for WPS status (if available)
+WPS_STATUS="Unknown"
+if command -v iw &> /dev/null; then
+    WPS_STATUS=$(iw dev 2>/dev/null | grep -i wps | head -1 | xargs || echo "Not detectable")
+fi
+
+# Check for UPnP status
+UPNP_STATUS="Unknown"
+if command -v upnpc &> /dev/null; then
+    UPNP_STATUS=$(upnpc -l 2>&1 | head -5 | grep -i "upnp" || echo "Not detectable")
+fi
+
+# Check for Guest Network (Mac-specific)
+GUEST_NETWORK="Unknown"
+if [ "$(uname)" = "Darwin" ]; then
+    GUEST_NETWORK=$(networksetup -listallhardwareports 2>/dev/null | grep -i "guest" || echo "Not detectable")
+fi
 # Get System Information
 OS=$(sw_vers -productName 2>/dev/null || uname -s)
 OS_VERSION=$(sw_vers -productVersion 2>/dev/null || uname -r)
@@ -93,5 +110,9 @@ cat <<EOF
 "connectionType": "$CONNECTION_TYPE",
 "operatingSystem": "$OS",
 "osVersion": "$OS_VERSION"
+ "wpsStatus": "$WPS_STATUS",
+  "upnpStatus": "$UPNP_STATUS",
+  "guestNetworkDetected": "$GUEST_NETWORK",
+  "timestamp": "$(date +%Y-%m-%d_%H:%M:%S)"
 }
 EOF
