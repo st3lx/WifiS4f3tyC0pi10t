@@ -770,7 +770,8 @@ document.addEventListener('DOMContentLoaded', function() {
             fixDiv.innerHTML = fixMessage;
         }
     }
-  // Function to analyze the pasted script output
+
+// Function to analyze the pasted script output
 window.analyzeScriptOutput = function() {
     const output = document.getElementById('script-output').value;
     const resultDiv = document.getElementById('script-analysis-result');
@@ -780,6 +781,23 @@ window.analyzeScriptOutput = function() {
 
     try {
         const data = JSON.parse(output); 
+        
+        // Fix for openPorts - it might be a string representation of an array
+        if (typeof data.openPorts === 'string') {
+            try {
+                // Try to parse the string as JSON
+                data.openPorts = JSON.parse(data.openPorts);
+            } catch (e) {
+                // If parsing fails, try to extract numbers from the string
+                const portMatches = data.openPorts.match(/\d+/g);
+                if (portMatches) {
+                    data.openPorts = portMatches.map(Number);
+                } else {
+                    data.openPorts = [];
+                }
+            }
+        }
+        
         let html = '';
 
         // --- Network Information ---
@@ -900,12 +918,16 @@ window.analyzeScriptOutput = function() {
         html += `<br><button onclick="location.reload()">Start Full Guided Checkup for Default Passwords & More</button>`;
         html += `</div>`;
 
+        
         resultDiv.innerHTML += html;
 
     } catch (e) {
         resultDiv.innerHTML += `<p>Could not parse the script output. Please ensure you copied the entire text correctly.</p><pre>${output}</pre>`;
+        console.error("Parse error:", e);
     }
 }
+
+
 
     // New function to simulate a more thorough public IP check
     window.checkPublicIp = function(ip) {
