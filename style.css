@@ -85,3 +85,11 @@ p {
     padding: 10px;
     box-sizing: border-box;
 }
+
+.result-box {
+    background-color: #f8f9fa;
+    border-left: 4px solid #125892;
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 0 4px 4px 0;
+}
