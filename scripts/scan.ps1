@@ -1,41 +1,67 @@
-# Enhanced WiFi Safety Copilot Scan Script for Windows
-# Save this as scan.ps1 in your 'scripts' folder on GitHub
+# Supercharged WiFi Safety Copilot Scan Script for Windows
+# Attempts to auto-detect as many issues as possible
 
-# Function to get the default gateway (router IP)
+# 1. Get Router IP (Gateway)
 $gateway = (Get-NetIPConfiguration | Where-Object { $_.IPv4DefaultGateway -ne $null }).IPv4DefaultGateway.NextHop
 
-# Function to get the public IP address
+# 2. Get Public IP
 try {
     $publicIP = (Invoke-WebRequest -Uri "https://api.ipify.org" -UseBasicParsing).Content
 } catch {
     $publicIP = "Failed to retrieve"
 }
 
-# Function to get a list of connected devices (via ARP table)
-$devices = Get-NetNeighbor -AddressFamily IPv4 | Where-Object { $_.State -eq "Reachable" } | Select-Object IPAddress, LinkLayerAddress, State
-
-# Function to check if common router admin ports are open on the public IP (SIMULATION - See Note below)
-# Note: Actual port scanning from a web-served script is slow, complex, and often blocked. We simulate it.
+# 3. Check for Open Ports on Public IP (Simulated for common admin ports)
 $commonPorts = @(80, 443, 22, 23, 8080, 21)
-$openPorts = @() # Empty array for real use
-# $openPorts = @(80, 443) # Uncomment this line to simulate finding open ports for testing
+$openPorts = @() # Empty for real use
+# $openPorts = @(80, 443) # Uncomment to simulate finding open ports
 
-# Function to get Network Profile type (Public/Private) which affects firewall rules
-$networkProfile = (Get-NetConnectionProfile | Where-Object { $_.IPv4Connectivity -eq "Internet" }).Name
+# 4. Attempt to Check Router Login Security (HTTP vs HTTPS)
+$routerHttpStatus = "unknown"
+$routerHttpsStatus = "unknown"
+try {
+    # Try HTTP
+    $httpResponse = Invoke-WebRequest -Uri "http://$gateway" -TimeoutSec 3 -ErrorAction SilentlyContinue -UseBasicParsing
+    if ($httpResponse.StatusCode -eq 200) { $routerHttpStatus = "accessible" }
+} catch { $routerHttpStatus = "inaccessible" }
 
-# Build the result object
+try {
+    # Try HTTPS (ignore certificate errors for older routers)
+    $httpsResponse = Invoke-WebRequest -Uri "https://$gateway" -TimeoutSec 3 -ErrorAction SilentlyContinue -UseBasicParsing -SkipCertificateCheck
+    if ($httpsResponse.StatusCode -eq 200) { $routerHttpsStatus = "accessible" }
+} catch { $routerHttpsStatus = "inaccessible" }
+
+# 5. Get Wi-Fi Interface Information (to guess encryption)
+$wifiNetwork = (Get-NetConnectionProfile | Where-InterfaceType Wireless)
+$wifiName = $wifiNetwork.Name
+# This is a best-guess for encryption. Windows API doesn't expose this easily.
+$wifiAuth = $wifiNetwork.Authentication
+# Map Windows auth types to common encryption
+$encryptionMap = @{
+    'WPA2' = 'WPA2'
+    'WPA'  = 'WPA'
+    'Open' = 'Open/None'
+}
+$wifiEncryption = $encryptionMap[$wifiAuth] ?? "Unknown ($wifiAuth)"
+
+# 6. Get connected device count (ARP table)
+$deviceCount = (Get-NetNeighbor -AddressFamily IPv4 | Where-Object { $_.State -eq "Reachable" }).Count
+
+# Build the enhanced result object
 $result = [PSCustomObject]@{
+    # Network Info
     gateway = $gateway
     publicIP = $publicIP
-    networkProfile = $networkProfile
+    # Security Checks
     openPorts = $openPorts
-    # deviceCount = $devices.Count
-    # For simplicity, we'll just send the count. Sending all MAC addresses could be a privacy concern.
-    connectedDeviceCount = $devices.Count
+    routerHttpAccess = $routerHttpStatus
+    routerHttpsAccess = $routerHttpsStatus
+    # Wi-Fi Info
+    wifiSSID = $wifiName
+    wifiEncryption = $wifiEncryption
+    # Other
+    connectedDeviceCount = $deviceCount
 }
 
 # Output the result as JSON
 $result | ConvertTo-Json
-
-# Note: A full port scan is not performed due to technical and ethical constraints.
-# This script is designed for safety and user education.

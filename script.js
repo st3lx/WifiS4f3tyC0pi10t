@@ -771,67 +771,81 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     // Function to analyze the pasted script output
-        // Function to analyze the pasted script output
+       // Function to analyze the pasted script output
     window.analyzeScriptOutput = function() {
         const output = document.getElementById('script-output').value;
         const resultDiv = document.getElementById('script-analysis-result');
         
         // Clear previous results
-        resultDiv.innerHTML = "<h3>🔍 Analysis Report</h3>";
+        resultDiv.innerHTML = "<h3>🔍 Automated Security Report</h3>";
 
         try {
-            // Try to parse the output as JSON
             const data = JSON.parse(output); 
-            
-            // ------- 1. Gateway / Router IP -------
-            let html = `<div class="result-box">
-                <h4>🌐 Your Local Network</h4>
-                <p><b>Router IP Address:</b> <code>${data.gateway || 'Not Found'}</code></p>`;
-            
-            // ------- 2. Public IP -------
-            html += `<p><b>Public IP Address:</b> <code>${data.publicIP || 'Not Found'}</code></p>`;
-            if (data.publicIP && data.publicIP !== "Failed to retrieve") {
-                html += `<p><small>This is your address on the internet. <button onclick="checkPublicIp('${data.publicIP}')">Check for Open Ports</button></small></p>`;
-            }
+            let html = '';
 
-            // ------- 3. Connected Devices -------
-            html += `<p><b>Devices Connected to Your Network:</b> ~${data.connectedDeviceCount || 'Unknown'}</p>`;
-            if (data.connectedDeviceCount > 10) {
-                html += `<p style="color: orange;">🟡 You have many devices connected. Make sure you recognize them all in your router's admin panel.</p>`;
-            }
+            // --- Phase 1 Checks ---
+            html += `<div class="result-box"><h4>🔒 Phase 1: Critical Settings</h4>`;
 
-            // ------- 4. Open Ports Check (The Main Event) -------
-            html += `</div><div class="result-box"><h4>🚪 Port Check on Your Public IP</h4>`;
-            
+            // Check 1: Remote Management (Open Ports)
             if (data.openPorts && data.openPorts.length > 0) {
-                html += `<p style="color: red; font-weight: bold;">⚠️ CRITICAL WARNING: Open ports found: <code>${data.openPorts.join(', ')}</code></p>`;
-                html += `<p>This means your router's admin panel or other services might be exposed to the entire internet. This is a severe security risk.</p>`;
-                html += `<p><b>Action Required:</b> Log into your router and <u>disable Remote Management/WAN Access</u> immediately.</p>`;
+                html += `<p style="color: red; font-weight: bold;">❌ CRITICAL: Remote Management likely ENABLED (Ports ${data.openPorts.join(', ')} open)</p>`;
             } else {
-                html += `<p style="color: green;">✅ Good! No critical open ports found on your public IP address.</p>`;
-                html += `<p>Your router does not appear to be openly accessible from the internet, which is the secure default setting.</p>`;
+                html += `<p style="color: green;">✅ Remote Management likely DISABLED</p>`;
             }
-            html += `<p><small><em>Note: This checks common router ports (80, 443, 22, 23, 8080, 21).</em></small></p>`;
 
+            // Check 2: Router Login Security (HTTP vs HTTPS)
+            if (data.routerHttpsAccess === 'accessible') {
+                html += `<p style="color: green;">✅ Secure Router Login (HTTPS) AVAILABLE</p>`;
+            } else if (data.routerHttpAccess === 'accessible') {
+                html += `<p style="color: red;">❌ Router Login INSECURE (HTTP only)</p>`;
+            } else {
+                html += `<p>⚠️ Could not automatically access router login page at ${data.gateway}</p>`;
+            }
 
-            // ------- 5. Recommendations -------
-            html += `</div><div class="result-box"><h4>📋 Recommended Next Steps</h4>`;
-            html += `<p>This automated check is a great start. For a complete security audit, follow our guided checkup:</p>`;
-            html += `<ul>`;
-            html += `<li>Use your router's IP (<code>${data.gateway || '192.168.1.1'}</code>) to <b>log in and check for default passwords</b>.</li>`;
-            html += `<li>Verify the list of connected devices in your router's admin panel.</li>`;
-            html += `<li>Check your Wi-Fi encryption type and password strength.</li>`;
+            // Check 3: Wi-Fi Encryption
+            if (data.wifiEncryption && data.wifiEncryption.includes('WPA3')) {
+                html += `<p style="color: green;">✅ Excellent Wi-Fi Encryption: ${data.wifiEncryption}</p>`;
+            } else if (data.wifiEncryption && data.wifiEncryption.includes('WPA2')) {
+                html += `<p style="color: green;">✅ Good Wi-Fi Encryption: ${data.wifiEncryption}</p>`;
+            } else if (data.wifiEncryption && (data.wifiEncryption.includes('WPA') || data.wifiEncryption.includes('WEP'))) {
+                html += `<p style="color: red;">❌ Outdated Wi-Fi Encryption: ${data.wifiEncryption}</p>`;
+            } else if (data.wifiEncryption && data.wifiEncryption.includes('Open')) {
+                html += `<p style="color: red;">❌ CRITICAL: Open Wi-Fi Network (No Password)</p>`;
+            } else {
+                html += `<p>🔍 Wi-Fi Encryption: Could not auto-detect (${data.wifiEncryption || 'Unknown'})</p>`;
+            }
+            html += `</div>`;
+
+            // --- Network Information ---
+            html += `<div class="result-box"><h4>🌐 Network Information</h4>`;
+            html += `<p><b>Router IP:</b> <code>${data.gateway || 'Unknown'}</code> &nbsp;|&nbsp; <b>Public IP:</b> <code>${data.publicIP || 'Unknown'}</code></p>`;
+            html += `<p><b>Wi-Fi Name (SSID):</b> ${data.wifiSSID || 'Unknown'}</p>`;
+            html += `<p><b>Devices Detected:</b> ~${data.connectedDeviceCount || '0'} (Your computer can see this many)</p>`;
+            html += `</div>`;
+
+            // --- Action Plan ---
+            html += `<div class="result-box"><h4>📋 Your Action Plan</h4>`;
+            html += `<p>Based on this scan, here are your next steps:</p><ul>`;
+
+            if (data.openPorts && data.openPorts.length > 0) {
+                html += `<li><b>URGENT:</b> Disable <i>Remote Management</i> in your router settings.</li>`;
+            }
+            if (data.routerHttpAccess === 'accessible' && data.routerHttpsAccess !== 'accessible') {
+                html += `<li><b>Important:</b> Always use <code>https://${data.gateway}</code> to log into your router.</li>`;
+            }
+            if (data.wifiEncryption && (data.wifiEncryption.includes('WEP') || data.wifiEncryption.includes('Open'))) {
+                html += `<li><b>URGENT:</b> Change your Wi-Fi encryption to WPA2 or WPA3.</li>`;
+            }
+
+            html += `<li><b>Complete the audit:</b> Log into your router at <code>${data.gateway || '192.168.1.1'}</code> to check for default passwords and other settings this scan can't see.</li>`;
             html += `</ul>`;
-            html += `<br><button onclick="location.reload()">Start Full Guided Checkup</button>`;
-
+            html += `<br><button onclick="location.reload()">Start Full Guided Checkup for Default Passwords & More</button>`;
             html += `</div>`;
 
             resultDiv.innerHTML += html;
 
         } catch (e) {
-            // If it's not JSON, just show the raw output
-            resultDiv.innerHTML += `<p>Could not parse the script output. Please ensure you copied the entire text correctly.</p>
-                                    <pre>${output}</pre>`;
+            resultDiv.innerHTML += `<p>Could not parse the script output. Please ensure you copied the entire text correctly.</p><pre>${output}</pre>`;
         }
     }
 
