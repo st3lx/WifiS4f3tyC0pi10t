@@ -462,19 +462,172 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Function for the "Check Database" button (example stub)
-    window.checkDefaultPassword = function() {
-        const model = document.getElementById('routerModelInput').value;
-        // In a real app, you would search your JSON database here.
-        // For now, we'll just simulate a result.
-        const resultDiv = document.getElementById('defaultPasswordResult');
-        if (model.toLowerCase().includes('nighthawk')) {
-            resultDiv.innerHTML = `<p style="color: red;">⚠️ Found it! Common defaults for this model are <code>admin/password</code>. You should change this.</p>`;
-        } else if (model) {
-            resultDiv.innerHTML = `<p>Could not find that model in our database. Please search online for "<strong>${model} default password</strong>".</p>`;
-        } else {
-            resultDiv.innerHTML = `<p>Please enter a model number.</p>`;
-        }
+// Preload the router database
+let routerDatabase = null;
+
+// Function to load the database
+function loadRouterDatabase() {
+    return fetch('data/router-database.json')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            routerDatabase = data;
+            console.log('Router database loaded successfully');
+            return data;
+        })
+        .catch(error => {
+            console.error('Error loading router database:', error);
+            // Create a minimal fallback database
+            routerDatabase = {
+                routers: [
+                    {
+                        "model": "Netgear Nighthawk AX5400",
+                        "commonModels": ["RAX45", "RAX48", "AX5400", "Nighthawk AX", "Netgear AX"],
+                        "defaultUsername": "admin",
+                        "defaultPassword": "password",
+                        "loginUrl": "http://192.168.1.1",
+                        "manufacturer": "Netgear"
+                    }
+                ]
+            };
+            return routerDatabase;
+        });
+}
+
+// Load database when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    loadRouterDatabase();
+});
+
+// Improved search function
+window.checkDefaultPassword = function() {
+    const model = document.getElementById('routerModelInput').value.trim();
+    const resultDiv = document.getElementById('defaultPasswordResult');
+    
+    if (!model) {
+        resultDiv.innerHTML = `<p style="color: orange;">Please enter a router model number.</p>`;
+        return;
     }
+
+    resultDiv.innerHTML = `<p>Searching... <span class="loading">🔍</span></p>`;
+
+    // Use setTimeout to allow the UI to update before searching
+    setTimeout(() => {
+        if (!routerDatabase) {
+            // Database not loaded yet, try to load it
+            loadRouterDatabase().then(() => {
+                performSearch(model, resultDiv);
+            });
+        } else {
+            performSearch(model, resultDiv);
+        }
+    }, 100);
+}
+
+function performSearch(model, resultDiv) {
+    const searchTerm = model.toLowerCase().trim();
+    let foundResults = [];
+    
+    if (!searchTerm) {
+        resultDiv.innerHTML = `<p style="color: orange;">Please enter a router model number.</p>`;
+        return;
+    }
+
+    // Search through the database with multiple strategies
+    routerDatabase.routers.forEach(router => {
+        let matchScore = 0;
+        
+        // Exact model name match (highest priority)
+        if (router.model.toLowerCase() === searchTerm) {
+            matchScore = 100;
+        }
+        // Partial model name match
+        else if (router.model.toLowerCase().includes(searchTerm)) {
+            matchScore = 90;
+        }
+        
+        // Common models/aliases match
+        if (router.commonModels) {
+            for (const commonModel of router.commonModels) {
+                if (commonModel.toLowerCase() === searchTerm) {
+                    matchScore = Math.max(matchScore, 95);
+                    break;
+                } else if (commonModel.toLowerCase().includes(searchTerm)) {
+                    matchScore = Math.max(matchScore, 85);
+                }
+            }
+        }
+        
+        // Manufacturer match (lowest priority)
+        if (router.manufacturer.toLowerCase().includes(searchTerm)) {
+            matchScore = Math.max(matchScore, 70);
+        }
+        
+        if (matchScore > 0) {
+            foundResults.push({ router, score: matchScore });
+        }
+    });
+
+    // Sort by match score (highest first)
+    foundResults.sort((a, b) => b.score - a.score);
+    
+    if (foundResults.length > 0) {
+        displayResults(foundResults.map(item => item.router), resultDiv);
+    } else {
+        showExternalSearchOptions(model, resultDiv);
+    }
+}
+
+function displayResults(results, resultDiv) {
+    let resultHtml = `<div class="password-results">`;
+    
+    results.forEach(router => {
+        resultHtml += `
+            <div class="router-result">
+                <h4>${router.model} (${router.manufacturer})</h4>
+                <p><strong>Default Username:</strong> <code>${router.defaultUsername}</code></p>
+                <p><strong>Default Password:</strong> <code>${router.defaultPassword}</code></p>
+                <p><strong>Login URL:</strong> <a href="${router.loginUrl}" target="_blank">${router.loginUrl}</a></p>
+                <p class="warning">⚠️ If these credentials work, change them immediately!</p>
+            </div>
+        `;
+    });
+    
+    resultHtml += `</div>`;
+    resultDiv.innerHTML = resultHtml;
+}
+
+function showExternalSearchOptions(model, resultDiv) {
+    resultDiv.innerHTML = `
+        <p>Could not find "${model}" in our database.</p>
+        <p>Try searching online for: <strong>"${model} default password"</strong></p>
+        
+        <h4>Common Default Credentials by Brand:</h4>
+        <div class="common-credentials">
+            <div><strong>Netgear:</strong> admin / password</div>
+            <div><strong>TP-Link:</strong> admin / admin</div>
+            <div><strong>Linksys:</strong> admin / admin (or blank)</div>
+            <div><strong>ASUS:</strong> admin / admin</div>
+            <div><strong>D-Link:</strong> admin / (blank)</div>
+            <div><strong>Belkin:</strong> (blank) / (blank)</div>
+            <div><strong>Buffalo:</strong> root / (blank)</div>
+            <div><strong>Zyxel:</strong> admin / 1234</div>
+            <div><strong>Ubiquiti:</strong> ubnt / ubnt</div>
+            <div><strong>MikroTik:</strong> admin / (blank)</div>
+        </div>
+        
+        <p>Or check these resources:</p>
+        <ul>
+            <li><a href="https://www.routerpasswords.com/search/${encodeURIComponent(model)}" target="_blank" rel="noopener">RouterPasswords.com</a></li>
+            <li><a href="https://www.defaultpassword.com/?s=${encodeURIComponent(model)}" target="_blank" rel="noopener">DefaultPassword.com</a></li>
+            <li><a href="https://portforward.com/router-password/" target="_blank" rel="noopener">PortForward.com</a></li>
+        </ul>
+    `;
+}
 
         // Function to copy the command to clipboard
     window.copyCommand = function(codeElement) {
@@ -723,6 +876,52 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Add this to script.js to create a more automated detection system
+window.autoDetectRouter = function() {
+    // Try to automatically detect router information
+    const gateway = detectGateway();
+    if (gateway) {
+        // Try to identify router model via UPnP or common admin page scraping
+        identifyRouterModel(gateway).then(model => {
+            document.getElementById('routerModelInput').value = model;
+            checkDefaultPassword();
+        });
+    }
+};
+
+function detectGateway() {
+    // Implementation to automatically detect gateway IP
+    // Could use WebRTC or other techniques that work in browsers
+    return null; // Placeholder
+}
+
+async function identifyRouterModel(gateway) {
+    try {
+        // Try to fetch the router login page and extract identifying information
+        const response = await fetch(`http://${gateway}`, {mode: 'no-cors'});
+        // Parse HTML for router model clues (title, meta tags, etc.)
+        return "Detected Router Model"; // Placeholder
+    } catch (e) {
+        return "Unknown (Check manually)";
+    }
+}
+
+// Add limited local network scanning capabilities
+window.scanLocalNetwork = function() {
+    // Scan for devices on the local network using available techniques
+    const ipBase = getLocalIPBase();
+    if (ipBase) {
+        scanIPRange(ipBase, 1, 254).then(devices => {
+            displayNetworkDevices(devices);
+        });
+    }
+};
+
+function getLocalIPBase() {
+    // Get the local IP base (e.g., 192.168.1.x)
+    // This is challenging in browsers but possible with WebRTC in some cases
+    return null;
+}
     // Helper for Guest Network Assessment
     window.assessGuestNetwork = function(status) {
         const resultDiv = document.getElementById('guestNetworkResult');

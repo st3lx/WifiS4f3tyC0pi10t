@@ -1,0 +1,460 @@
+{
+  "routers": [
+    {
+      "model": "Netgear Nighthawk AX5400",
+      "commonModels": ["RAX45", "RAX48", "AX5400", "Nighthawk AX", "Netgear AX"],
+      "defaultUsername": "admin",
+      "defaultPassword": "password",
+      "loginUrl": "http://192.168.1.1",
+      "manufacturer": "Netgear"
+    },
+    {
+      "model": "Netgear Nighthawk R7000",
+      "commonModels": ["R7000", "Nighthawk AC1900"],
+      "defaultUsername": "admin",
+      "defaultPassword": "password",
+      "loginUrl": "http://192.168.1.1",
+      "manufacturer": "Netgear"
+    },
+    {
+      "model": "Netgear Nighthawk R6700",
+      "commonModels": ["R6700", "Nighthawk AC1750"],
+      "defaultUsername": "admin",
+      "defaultPassword": "password",
+      "loginUrl": "http://192.168.1.1",
+      "manufacturer": "Netgear"
+    },
+    {
+      "model": "Netgear Orbi RBK50",
+      "commonModels": ["Orbi RBK50", "Orbi AC3000"],
+      "defaultUsername": "admin",
+      "defaultPassword": "password",
+      "loginUrl": "http://192.168.1.1",
+      "manufacturer": "Netgear"
+    },
+    {
+      "model": "TP-Link Archer A7",
+      "commonModels": ["Archer A7", "C7", "AC1750"],
+      "defaultUsername": "admin",
+      "defaultPassword": "admin",
+      "loginUrl": "http://192.168.0.1",
+      "manufacturer": "TP-Link"
+    },
+    {
+      "model": "TP-Link Archer C9",
+      "commonModels": ["Archer C9", "AC1900"],
+      "defaultUsername": "admin",
+      "defaultPassword": "admin",
+      "loginUrl": "http://192.168.0.1",
+      "manufacturer": "TP-Link"
+    },
+    {
+      "model": "TP-Link Archer AX50",
+      "commonModels": ["Archer AX50", "AX3000"],
+      "defaultUsername": "admin",
+      "defaultPassword": "admin",
+      "loginUrl": "http://192.168.0.1",
+      "manufacturer": "TP-Link"
+    },
+    {
+      "model": "TP-Link Deco M5",
+      "commonModels": ["Deco M5", "Deco Mesh"],
+      "defaultUsername": "admin",
+      "defaultPassword": "admin",
+      "loginUrl": "http://192.168.68.1",
+      "manufacturer": "TP-Link"
+    },
+    {
+      "model": "Linksys EA7500",
+      "commonModels": ["EA7500", "Max-Stream AC1900"],
+      "defaultUsername": "admin",
+      "defaultPassword": "admin",
+      "loginUrl": "http://192.168.1.1",
+      "manufacturer": "Linksys"
+    },
+    {
+      "model": "Linksys EA8300",
+      "commonModels": ["EA8300", "Max-Stream AC2200"],
+      "defaultUsername": "admin",
+      "defaultPassword": "admin",
+      "loginUrl": "http://192.168.1.1",
+      "manufacturer": "Linksys"
+    },
+    {
+      "model": "Linksys Velop",
+      "commonModels": ["Velop", "Mesh Router"],
+      "defaultUsername": "admin",
+      "defaultPassword": "admin",
+      "loginUrl": "http://192.168.1.1",
+      "manufacturer": "Linksys"
+    },
+    {
+      "model": "ASUS RT-AC68U",
+      "commonModels": ["RT-AC68U", "AC1900"],
+      "defaultUsername": "admin",
+      "defaultPassword": "admin",
+      "loginUrl": "http://192.168.50.1",
+      "manufacturer": "ASUS"
+    },
+    {
+      "model": "ASUS RT-AX86U",
+      "commonModels": ["RT-AX86U", "AX5700"],
+      "defaultUsername": "admin",
+      "defaultPassword": "admin",
+      "loginUrl": "http://192.168.50.1",
+      "manufacturer": "ASUS"
+    },
+    {
+      "model": "ASUS RT-AX88U",
+      "commonModels": ["RT-AX88U", "AX6000"],
+      "defaultUsername": "admin",
+      "defaultPassword": "admin",
+      "loginUrl": "http://192.168.50.1",
+      "manufacturer": "ASUS"
+    },
+    {
+      "model": "Google Nest Wifi",
+      "commonModels": ["Google Wifi", "Nest Wifi"],
+      "defaultUsername": "(None)",
+      "defaultPassword": "(Setup via app)",
+      "loginUrl": "http://192.168.86.1",
+      "manufacturer": "Google"
+    },
+    {
+      "model": "Google Wifi",
+      "commonModels": ["Google WiFi", "Google Mesh"],
+      "defaultUsername": "(None)",
+      "defaultPassword": "(Setup via app)",
+      "loginUrl": "http://192.168.86.1",
+      "manufacturer": "Google"
+    },
+    {
+      "model": "Eero Pro 6",
+      "commonModels": ["Eero Pro", "Eero 6", "Eero Mesh"],
+      "defaultUsername": "(None)",
+      "defaultPassword": "(Setup via app)",
+      "loginUrl": "http://192.168.4.1",
+      "manufacturer": "Amazon"
+    },
+    {
+      "model": "Eero 6+",
+      "commonModels": ["Eero Plus", "Eero 6+"],
+      "defaultUsername": "(None)",
+      "defaultPassword": "(Setup via app)",
+      "loginUrl": "http://192.168.4.1",
+      "manufacturer": "Amazon"
+    },
+    {
+      "model": "Synology RT2600ac",
+      "commonModels": ["RT2600ac", "Synology Router"],
+      "defaultUsername": "admin",
+      "defaultPassword": "admin",
+      "loginUrl": "http://192.168.1.1",
+      "manufacturer": "Synology"
+    },
+    {
+      "model": "Synology MR2200ac",
+      "commonModels": ["MR2200ac", "Synology Mesh"],
+      "defaultUsername": "admin",
+      "defaultPassword": "admin",
+      "loginUrl": "http://192.168.1.1",
+      "manufacturer": "Synology"
+    },
+    {
+      "model": "D-Link DIR-867",
+      "commonModels": ["DIR-867", "AC1750"],
+      "defaultUsername": "admin",
+      "defaultPassword": "(blank)",
+      "loginUrl": "http://192.168.0.1",
+      "manufacturer": "D-Link"
+    },
+    {
+      "model": "D-Link DIR-882",
+      "commonModels": ["DIR-882", "AC2600"],
+      "defaultUsername": "admin",
+      "defaultPassword": "(blank)",
+      "loginUrl": "http://192.168.0.1",
+      "manufacturer": "D-Link"
+    },
+    {
+      "model": "D-Link COVR-1100",
+      "commonModels": ["COVR-1100", "Covr Mesh"],
+      "defaultUsername": "admin",
+      "defaultPassword": "(blank)",
+      "loginUrl": "http://192.168.0.1",
+      "manufacturer": "D-Link"
+    },
+    {
+      "model": "NETGEAR C6250",
+      "commonModels": ["C6250", "Cable Modem Router"],
+      "defaultUsername": "admin",
+      "defaultPassword": "password",
+      "loginUrl": "http://192.168.0.1",
+      "manufacturer": "NETGEAR"
+    },
+    {
+      "model": "ARRIS SURFboard SBG10",
+      "commonModels": ["SBG10", "ARRIS Modem Router"],
+      "defaultUsername": "admin",
+      "defaultPassword": "password",
+      "loginUrl": "http://192.168.0.1",
+      "manufacturer": "ARRIS"
+    },
+    {
+      "model": "Motorola MG7700",
+      "commonModels": ["MG7700", "Cable Modem Router"],
+      "defaultUsername": "admin",
+      "defaultPassword": "motorola",
+      "loginUrl": "http://192.168.0.1",
+      "manufacturer": "Motorola"
+    },
+    {
+      "model": "ASUS DSL-AC68U",
+      "commonModels": ["DSL-AC68U", "DSL Router"],
+      "defaultUsername": "admin",
+      "defaultPassword": "admin",
+      "loginUrl": "http://192.168.1.1",
+      "manufacturer": "ASUS"
+    },
+    {
+      "model": "TP-Link Archer VR600",
+      "commonModels": ["VR600", "VDSL Router"],
+      "defaultUsername": "admin",
+      "defaultPassword": "admin",
+      "loginUrl": "http://192.168.1.1",
+      "manufacturer": "TP-Link"
+    },
+    {
+      "model": "Huawei B525",
+      "commonModels": ["B525", "4G Router"],
+      "defaultUsername": "admin",
+      "defaultPassword": "admin",
+      "loginUrl": "http://192.168.8.1",
+      "manufacturer": "Huawei"
+    },
+    {
+      "model": "Huawei AX3",
+      "commonModels": ["AX3", "WiFi 6 Router"],
+      "defaultUsername": "admin",
+      "defaultPassword": "admin",
+      "loginUrl": "http://192.168.3.1",
+      "manufacturer": "Huawei"
+    },
+    {
+      "model": "Zyxel NBG6615",
+      "commonModels": ["NBG6615", "AC1200"],
+      "defaultUsername": "admin",
+      "defaultPassword": "1234",
+      "loginUrl": "http://192.168.1.1",
+      "manufacturer": "Zyxel"
+    },
+    {
+      "model": "Zyxel Armor Z2",
+      "commonModels": ["Armor Z2", "AC2600"],
+      "defaultUsername": "admin",
+      "defaultPassword": "1234",
+      "loginUrl": "http://192.168.1.1",
+      "manufacturer": "Zyxel"
+    },
+    {
+      "model": "Buffalo WZR-1750DHP",
+      "commonModels": ["WZR-1750DHP", "AC1750"],
+      "defaultUsername": "root",
+      "defaultPassword": "(blank)",
+      "loginUrl": "http://192.168.11.1",
+      "manufacturer": "Buffalo"
+    },
+    {
+      "model": "Buffalo WSR-2533DHP",
+      "commonModels": ["WSR-2533DHP", "AC1300"],
+      "defaultUsername": "root",
+      "defaultPassword": "(blank)",
+      "loginUrl": "http://192.168.11.1",
+      "manufacturer": "Buffalo"
+    },
+    {
+      "model": "Trendnet TEW-827DRU",
+      "commonModels": ["TEW-827DRU", "AC2600"],
+      "defaultUsername": "admin",
+      "defaultPassword": "admin",
+      "loginUrl": "http://192.168.10.1",
+      "manufacturer": "Trendnet"
+    },
+    {
+      "model": "Trendnet TEW-812DRU",
+      "commonModels": ["TEW-812DRU", "AC1750"],
+      "defaultUsername": "admin",
+      "defaultPassword": "admin",
+      "loginUrl": "http://192.168.10.1",
+      "manufacturer": "Trendnet"
+    },
+    {
+      "model": "Apple AirPort Extreme",
+      "commonModels": ["AirPort Extreme", "A1521"],
+      "defaultUsername": "(None)",
+      "defaultPassword": "(Setup via Airport Utility)",
+      "loginUrl": "http://10.0.1.1",
+      "manufacturer": "Apple"
+    },
+    {
+      "model": "Apple AirPort Time Capsule",
+      "commonModels": ["Time Capsule", "A1470"],
+      "defaultUsername": "(None)",
+      "defaultPassword": "(Setup via Airport Utility)",
+      "loginUrl": "http://10.0.1.1",
+      "manufacturer": "Apple"
+    },
+    {
+      "model": "Ubiquiti AmpliFi HD",
+      "commonModels": ["AmpliFi HD", "Mesh Router"],
+      "defaultUsername": "ubnt",
+      "defaultPassword": "ubnt",
+      "loginUrl": "http://192.168.1.1",
+      "manufacturer": "Ubiquiti"
+    },
+    {
+      "model": "Ubiquiti UniFi Dream Machine",
+      "commonModels": ["UDM", "UniFi Router"],
+      "defaultUsername": "ubnt",
+      "defaultPassword": "ubnt",
+      "loginUrl": "http://192.168.1.1",
+      "manufacturer": "Ubiquiti"
+    },
+    {
+      "model": "MikroTik hAP ac2",
+      "commonModels": ["hAP ac2", "MikroTik Router"],
+      "defaultUsername": "admin",
+      "defaultPassword": "(blank)",
+      "loginUrl": "http://192.168.88.1",
+      "manufacturer": "MikroTik"
+    },
+    {
+      "model": "MikroTik RB4011",
+      "commonModels": ["RB4011", "MikroTik Router"],
+      "defaultUsername": "admin",
+      "defaultPassword": "(blank)",
+      "loginUrl": "http://192.168.88.1",
+      "manufacturer": "MikroTik"
+    },
+    {
+      "model": "ASUS RT-N66U",
+      "commonModels": ["RT-N66U", "Dark Knight"],
+      "defaultUsername": "admin",
+      "defaultPassword": "admin",
+      "loginUrl": "http://192.168.1.1",
+      "manufacturer": "ASUS"
+    },
+    {
+      "model": "TP-Link TL-WR841N",
+      "commonModels": ["TL-WR841N", "N300"],
+      "defaultUsername": "admin",
+      "defaultPassword": "admin",
+      "loginUrl": "http://192.168.0.1",
+      "manufacturer": "TP-Link"
+    },
+    {
+      "model": "Linksys WRT3200ACM",
+      "commonModels": ["WRT3200ACM", "OpenWRT"],
+      "defaultUsername": "admin",
+      "defaultPassword": "admin",
+      "loginUrl": "http://192.168.1.1",
+      "manufacturer": "Linksys"
+    },
+    {
+      "model": "Netgear R8000",
+      "commonModels": ["R8000", "Nighthawk X6"],
+      "defaultUsername": "admin",
+      "defaultPassword": "password",
+      "loginUrl": "http://192.168.1.1",
+      "manufacturer": "Netgear"
+    },
+    {
+      "model": "D-Link DIR-885L",
+      "commonModels": ["DIR-885L", "AC3150"],
+      "defaultUsername": "admin",
+      "defaultPassword": "(blank)",
+      "loginUrl": "http://192.168.0.1",
+      "manufacturer": "D-Link"
+    },
+    {
+      "model": "Belkin N600",
+      "commonModels": ["N600", "DB Wi-Fi Dual-Band N+"],
+      "defaultUsername": "(blank)",
+      "defaultPassword": "(blank)",
+      "loginUrl": "http://192.168.2.1",
+      "manufacturer": "Belkin"
+    },
+    {
+      "model": "Belkin AC1200",
+      "commonModels": ["AC1200", "DB Wi-Fi Dual-Band AC+"],
+      "defaultUsername": "(blank)",
+      "defaultPassword": "(blank)",
+      "loginUrl": "http://192.168.2.1",
+      "manufacturer": "Belkin"
+    },
+    {
+      "model": "Actiontec T3260",
+      "commonModels": ["T3260", "Verizon Fios"],
+      "defaultUsername": "admin",
+      "defaultPassword": "password",
+      "loginUrl": "http://192.168.1.1",
+      "manufacturer": "Actiontec"
+    },
+    {
+      "model": "Actiontec C3000A",
+      "commonModels": ["C3000A", "CenturyLink"],
+      "defaultUsername": "admin",
+      "defaultPassword": "(printed on router)",
+      "loginUrl": "http://192.168.0.1",
+      "manufacturer": "Actiontec"
+    },
+    {
+      "model": "Arris TG1682G",
+      "commonModels": ["TG1682G", "Xfinity Gateway"],
+      "defaultUsername": "admin",
+      "defaultPassword": "password",
+      "loginUrl": "http://10.0.0.1",
+      "manufacturer": "Arris"
+    },
+    {
+      "model": "Arris NVG599",
+      "commonModels": ["NVG599", "AT&T Fiber"],
+      "defaultUsername": "admin",
+      "defaultPassword": "(printed on router)",
+      "loginUrl": "http://192.168.1.254",
+      "manufacturer": "Arris"
+    },
+    {
+      "model": "Technicolor C2100T",
+      "commonModels": ["C2100T", "T-Mobile"],
+      "defaultUsername": "admin",
+      "defaultPassword": "(printed on router)",
+      "loginUrl": "http://192.168.12.1",
+      "manufacturer": "Technicolor"
+    },
+    {
+      "model": "Sagemcom F@st 5260",
+      "commonModels": ["F@st 5260", "CenturyLink"],
+      "defaultUsername": "admin",
+      "defaultPassword": "(printed on router)",
+      "loginUrl": "http://192.168.0.1",
+      "manufacturer": "Sagemcom"
+    },
+    {
+      "model": "ZTE MF288",
+      "commonModels": ["MF288", "4G LTE Router"],
+      "defaultUsername": "admin",
+      "defaultPassword": "admin",
+      "loginUrl": "http://192.168.0.1",
+      "manufacturer": "ZTE"
+    },
+    {
+      "model": "Zyxel VMG3925",
+      "commonModels": ["VMG3925", "VDSL Router"],
+      "defaultUsername": "admin",
+      "defaultPassword": "1234",
+      "loginUrl": "http://192.168.1.1",
+      "manufacturer": "Zyxel"
+    }
+  ]
+}
