@@ -1,26 +1,31 @@
-# Supercharged WiFi Safety Copilot Scan Script for Windows
-# Compatible with PowerShell 5.1 and newer
-# Robust version with better error handling
+# Ultra-Reliable WiFi Safety Copilot Scan Script for Windows
+# Focuses on what can be reliably detected from any PowerShell session
 
-# 1. Get Router IP (Gateway)
-$gateway = (Get-NetIPConfiguration | Where-Object { $_.IPv4DefaultGateway -ne $null }).IPv4DefaultGateway.NextHop
+# 1. Get Router IP (Gateway) - This usually works
+$gateway = "Not found"
+try {
+    $gateway = (Get-NetIPConfiguration | Where-Object { $_.IPv4DefaultGateway -ne $null }).IPv4DefaultGateway.NextHop
+} catch {
+    # Try alternative method
+    try {
+        $gateway = (Get-NetRoute -DestinationPrefix "0.0.0.0/0" | Sort-Object RouteMetric | Select-Object -First 1).NextHop
+    } catch {
+        $gateway = "Error detecting"
+    }
+}
 
-# 2. Get Public IP
+# 2. Get Public IP - This always works
 try {
     $publicIP = (Invoke-WebRequest -Uri "https://api.ipify.org" -UseBasicParsing).Content
 } catch {
     $publicIP = "Failed to retrieve"
 }
 
-# 3. Check for Open Ports on Public IP (Simulated for common admin ports)
-$openPorts = @() # Empty for real use
-# $openPorts = @(80, 443) # Uncomment to simulate finding open ports
-
-# 4. Attempt to Check Router Login Security (HTTP vs HTTPS)
+# 3. Check Router Login Security (HTTP vs HTTPS) - Only if we found gateway
 $routerHttpStatus = "unknown"
 $routerHttpsStatus = "unknown"
 
-if ($gateway) {
+if ($gateway -and $gateway -notmatch "Not found|Error") {
     try {
         # Try HTTP
         $httpResponse = Invoke-WebRequest -Uri "http://$gateway" -TimeoutSec 3 -ErrorAction SilentlyContinue -UseBasicParsing
@@ -45,60 +50,34 @@ if ($gateway) {
         if ($httpsResponse.StatusCode -eq 200) { $routerHttpsStatus = "accessible" }
     } catch { $routerHttpsStatus = "inaccessible" }
     finally {
-        # Revert to default certificate policy
         [System.Net.ServicePointManager]::CertificatePolicy = $null
     }
 }
 
-# 5. Get Wi-Fi Information (compatible method)
-$wifiName = "Unknown"
-$wifiEncryption = "Unknown"
-
-try {
-    # Method 1: Try netsh (works on all Windows versions)
-    $wifiInfo = netsh wlan show interfaces
-    if ($wifiInfo -match "SSID.*: (.*)") { $wifiName = $matches[1].Trim() }
-    if ($wifiInfo -match "Authentication.*: (.*)") { $wifiEncryption = $matches[1].Trim() }
-} catch {
-    try {
-        # Method 2: Try Get-NetConnectionProfile (alternative)
-        $wifiNetwork = Get-NetConnectionProfile | Where-Object { $_.InterfaceType -eq "Wireless" }
-        if ($wifiNetwork) {
-            $wifiName = $wifiNetwork.Name
-            $wifiEncryption = $wifiNetwork.Authentication
-        }
-    } catch {
-        # Method 3: Final fallback
-        $wifiName = "Could not detect"
-        $wifiEncryption = "Could not detect"
-    }
-}
-
-# 6. Get connected device count (ARP table)
+# 4. Get connected device count (ARP table) - This usually works
 $deviceCount = "Unknown"
 try {
-    $deviceCount = (Get-NetNeighbor -AddressFamily IPv4 | Where-Object { $_.State -eq "Reachable" }).Count
+    $devices = Get-NetNeighbor -AddressFamily IPv4 | Where-Object { $_.State -eq "Reachable" }
+    $deviceCount = $devices.Count
 } catch {
     $deviceCount = "Error retrieving"
 }
 
-# Build the enhanced result object
+# Build the result object - ONLY including reliable data
 $result = [PSCustomObject]@{
-    # Network Info
-    gateway = if ($gateway) { $gateway } else { "Not found" }
+    # Network Info (RELIABLE)
+    gateway = $gateway
     publicIP = $publicIP
-    # Security Checks
-    openPorts = $openPorts
+    
+    # Security Checks (RELIABLE if gateway found)
     routerHttpAccess = $routerHttpStatus
     routerHttpsAccess = $routerHttpsStatus
-    # Wi-Fi Info
-    wifiSSID = $wifiName
-    wifiEncryption = $wifiEncryption
-    # Other
+    
+    # Other (RELIABLE)
     connectedDeviceCount = $deviceCount
 }
 
 # Output the result as JSON
 $result | ConvertTo-Json
 
-# Note: This script is designed for safety and user education.
+# Note: Wi-Fi SSID and Encryption removed as they're unreliable in this context
