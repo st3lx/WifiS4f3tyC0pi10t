@@ -28,7 +28,7 @@ $routerHttpsStatus = "unknown"
 if ($gateway -and $gateway -notmatch "Not found|Error") {
 try {
 # Try HTTP
-$httpResponse = Invoke-WebRequest -Uri "http://$gateway" -TimeoutSec 3 -ErrorAction SilentlyContinue -UseBasicParsing
+$httpResponse = Invoke-WebRequest -Uri "http://$gateway" -TimeoutSec 5 -ErrorAction SilentlyContinue -UseBasicParsing
 if ($httpResponse.StatusCode -eq 200) { $routerHttpStatus = "accessible" }
 } catch { $routerHttpStatus = "inaccessible" }
 

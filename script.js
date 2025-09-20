@@ -169,10 +169,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Phase 2 - Issue 1: Remote Management Enabled
         {
             phase: 2,
-            title: "Remote Management Enabled",
+            title: "① Remote Management Enabled",
             why: "This feature, sometimes called 'Admin from WAN', allows you to access your router's settings from anywhere on the internet. While convenient, it is extremely dangerous. It means hackers anywhere in the world can also try to break into your router's login page with automated tools.",
             howToCheck: `
-                <p>Our system will now perform a quick check from our server to see if your router's admin panel is visible to the internet.</p>
+                <p>Our system will now perform a check simulation to see if your router's admin panel is visible to the internet due to sandbox limitations. Please do this check manually yourself to obtain actual information. </p>
                 <button onclick="checkRemoteManagement()">Check for Remote Access</button>
                 <div id="remoteManagementResult"></div>
 
@@ -198,7 +198,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Phase 2 - Issue 2: Unnecessary Services & Open Ports
         {
             phase: 2,
-            title: "Unnecessary Services & Open Ports",
+            title: "② Unnecessary Services & Open Ports",
             why: "Routers run services that can accept connections. Some, like UPnP (Universal Plug and Play), are convenient for gaming and devices but can be tricked by malware on your network into opening doors for attackers. Others, like Telnet or old FTP, are never safe to have enabled as they send passwords in plain text.",
             howToCheck: `
                 <p>Checking this requires looking inside your router's settings.</p>
@@ -229,7 +229,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Phase 2 - Issue 3: Outdated Router Firmware
         {
             phase: 2,
-            title: "Outdated Router Firmware",
+            title: "③ Outdated Router Firmware",
             why: "Firmware is your router's operating system. Like any software, it can have security holes. Router manufacturers release updates to patch these vulnerabilities. If you don't update, you are leaving known doors unlocked for hackers to walk through.",
             howToCheck: `
                 <p>Let's see if your router is up to date.</p>
@@ -266,7 +266,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Phase 2 - Issue 4: Hijacked Internet Settings (DNS)
         {
             phase: 2,
-            title: "Hijacked Internet Settings (DNS)",
+            title: "④ Hijacked Internet Settings (DNS)",
             why: "DNS is the internet's phonebook; it turns a website name (like google.com) into an IP address. If a hacker changes your router's DNS settings, they can redirect you to perfect-looking fake versions of banks, email, or social media sites to steal your passwords, even if you type the correct address.",
             howToCheck: `
                 <p>Let's check your router's DNS settings for tampering.</p>
@@ -301,7 +301,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Phase 3- Issue 1: WPS (Wi-Fi Protected Setup) Enabled
         {
             phase: 3,
-            title: "WPS (Wi-Fi Protected Setup) Enabled",
+            title: "① WPS (Wi-Fi Protected Setup) Enabled",
             why: "WPS is the 'push-button' or PIN-based connection feature on your router. It has a critical design flaw: the PIN can be easily brute-forced by an attacker. This means even if you have a strong Wi-Fi password, a hacker can recover it in a few hours by cracking the WPS PIN, bypassing your security entirely.",
             howToCheck: `
                 <p>We need to check your router's settings for the WPS feature.</p>
@@ -332,7 +332,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Phase 3 - Issue 2: Guest Network Not in Use
         {
             phase: 3,
-            title: "Guest Network Not in Use",
+            title: "② Guest Network Not in Use",
             why: "All your devices are on one network. This means your personal laptop, your phone, your smart TV, and a visitor's potentially malware-ridden phone are all able to see and communicate with each other. A compromised device can be used to attack your more important devices. A Guest Network isolates guest traffic, protecting your core devices.",
             howToCheck: `
                 <p>Let's see if you are using your router's built-in Guest Network feature.</p>
@@ -369,7 +369,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Phase 3 - Issue 3: Unauthorized Devices on Your Network
         {
             phase: 3,
-            title: "Unauthorized Devices on Your Network",
+            title: "③ Unauthorized Devices on Your Network",
             why: "If an attacker guesses your password or exploits a weakness, they can connect to your network. From there, they can spy on your activity, attack your devices, or use your internet for illegal activities. Regularly checking for unknown devices helps you catch an intruder.",
             howToCheck: `
                 <p>This check involves looking at the list of devices currently connected to your router.</p>
