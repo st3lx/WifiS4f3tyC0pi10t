@@ -32,20 +32,66 @@ if [ -z "$ENCRYPTION" ]; then ENCRYPTION="Unknown"; fi
 # 5. Get connected device count
 DEVICE_COUNT=$(arp -a | grep -E '([0-9]{1,3}\.){3}[0-9]{1,3}' | wc -l | tr -d ' ')
 
-# 6. Simulated open ports (for demo)
-OPEN_PORTS="[]"
-# OPEN_PORTS="[80, 443]" # Uncomment to simulate open ports
+# 6. Get DNS Servers
+DNS_SERVERS=$(cat /etc/resolv.conf | grep 'nameserver' | awk '{print $2}' | tr '\n' ',' | sed 's/,$//')
+if [ -z "$DNS_SERVERS" ]; then DNS_SERVERS="Unknown"; fi
+
+# 7. Check for common open ports on router
+check_port() {
+local port=$1
+if nc -z -w 2 $GATEWAY $port 2>/dev/null; then
+echo $port
+fi
+}
+
+OPEN_PORTS="["
+for port in 80 443 22 23 21 8080 8443; do
+result=$(check_port $port)
+if [ ! -z "$result" ]; then
+OPEN_PORTS="$OPEN_PORTS$result,"
+fi
+done
+OPEN_PORTS=$(echo $OPEN_PORTS | sed 's/,$//')
+OPEN_PORTS="$OPEN_PORTS]"
+
+#Get network interface information
+INTERFACE=$(route get default 2>/dev/null | grep interface | awk '{print $2}')
+if [ ! -z "$INTERFACE" ]; then
+MAC_ADDRESS=$(ifconfig $INTERFACE 2>/dev/null | grep ether | awk '{print $2}')
+IP_ADDRESS=$(ipconfig getifaddr $INTERFACE 2>/dev/null)
+else
+MAC_ADDRESS="Unknown"
+IP_ADDRESS="Unknown"
+fi
+
+# 9. Check if WIFI or Ethernet
+CONNECTION_TYPE="Unknown"
+if [ ! -z "$SSID" ] && [ "$SSID" != "Unknown" ]; then
+CONNECTION_TYPE="WiFi"
+else
+CONNECTION_TYPE="Ethernet"
+fi
+
+# Get System Information
+OS=$(sw_vers -productName 2>/dev/null || uname -s)
+OS_VERSION=$(sw_vers -productVersion 2>/dev/null || uname -r)
 
 # Build the enhanced result JSON
 cat <<EOF
 {
-  "gateway": "$GATEWAY",
-  "publicIP": "$PUBLIC_IP",
-  "openPorts": $OPEN_PORTS,
-  "routerHttpAccess": "$HTTP_STATUS",
-  "routerHttpsAccess": "$HTTPS_STATUS",
-  "wifiSSID": "$SSID",
-  "wifiEncryption": "$ENCRYPTION",
-  "connectedDeviceCount": $DEVICE_COUNT
+"gateway": "$GATEWAY",
+"publicIP": "$PUBLIC_IP",
+"openPorts": $OPEN_PORTS,
+"routerHttpAccess": "$HTTP_STATUS",
+"routerHttpsAccess": "$HTTPS_STATUS",
+"wifiSSID": "$SSID",
+"wifiEncryption": "$ENCRYPTION",
+"connectedDeviceCount": $DEVICE_COUNT,
+"dnsServers": "$DNS_SERVERS",
+"macAddress": "$MAC_ADDRESS",
+"ipAddress": "$IP_ADDRESS",
+"connectionType": "$CONNECTION_TYPE",
+"operatingSystem": "$OS",
+"osVersion": "$OS_VERSION"
 }
 EOF

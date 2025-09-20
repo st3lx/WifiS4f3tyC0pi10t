@@ -770,84 +770,142 @@ document.addEventListener('DOMContentLoaded', function() {
             fixDiv.innerHTML = fixMessage;
         }
     }
-    // Function to analyze the pasted script output
-       // Function to analyze the pasted script output
-    window.analyzeScriptOutput = function() {
-        const output = document.getElementById('script-output').value;
-        const resultDiv = document.getElementById('script-analysis-result');
-        
-        // Clear previous results
-        resultDiv.innerHTML = "<h3>🔍 Automated Security Report</h3>";
+  // Function to analyze the pasted script output
+window.analyzeScriptOutput = function() {
+    const output = document.getElementById('script-output').value;
+    const resultDiv = document.getElementById('script-analysis-result');
+    
+    // Clear previous results
+    resultDiv.innerHTML = "<h3>🔍 Automated Security Report</h3>";
 
-        try {
-            const data = JSON.parse(output); 
-            let html = '';
+    try {
+        const data = JSON.parse(output); 
+        let html = '';
 
-            // --- Phase 1 Checks ---
-            html += `<div class="result-box"><h4>🔒 Phase 1: Critical Settings</h4>`;
-
-            // Check 1: Remote Management (Open Ports)
-            if (data.openPorts && data.openPorts.length > 0) {
-                html += `<p style="color: red; font-weight: bold;">❌ CRITICAL: Remote Management likely ENABLED (Ports ${data.openPorts.join(', ')} open)</p>`;
-            } else {
-                html += `<p style="color: green;">✅ Remote Management likely DISABLED</p>`;
-            }
-
-            // Check 2: Router Login Security (HTTP vs HTTPS)
-            if (data.routerHttpsAccess === 'accessible') {
-                html += `<p style="color: green;">✅ Secure Router Login (HTTPS) AVAILABLE</p>`;
-            } else if (data.routerHttpAccess === 'accessible') {
-                html += `<p style="color: red;">❌ Router Login INSECURE (HTTP only)</p>`;
-            } else {
-                html += `<p>⚠️ Could not automatically access router login page at ${data.gateway}</p>`;
-            }
-
-            // Check 3: Wi-Fi Encryption
-            if (data.wifiEncryption && data.wifiEncryption.includes('WPA3')) {
-                html += `<p style="color: green;">✅ Excellent Wi-Fi Encryption: ${data.wifiEncryption}</p>`;
-            } else if (data.wifiEncryption && data.wifiEncryption.includes('WPA2')) {
-                html += `<p style="color: green;">✅ Good Wi-Fi Encryption: ${data.wifiEncryption}</p>`;
-            } else if (data.wifiEncryption && (data.wifiEncryption.includes('WPA') || data.wifiEncryption.includes('WEP'))) {
-                html += `<p style="color: red;">❌ Outdated Wi-Fi Encryption: ${data.wifiEncryption}</p>`;
-            } else if (data.wifiEncryption && data.wifiEncryption.includes('Open')) {
-                html += `<p style="color: red;">❌ CRITICAL: Open Wi-Fi Network (No Password)</p>`;
-            } else {
-                html += `<p>🔍 Wi-Fi Encryption: Could not auto-detect (${data.wifiEncryption || 'Unknown'})</p>`;
-            }
-            html += `</div>`;
-
-            // --- Network Information ---
-            html += `<div class="result-box"><h4>🌐 Network Information</h4>`;
-            html += `<p><b>Router IP:</b> <code>${data.gateway || 'Unknown'}</code> &nbsp;|&nbsp; <b>Public IP:</b> <code>${data.publicIP || 'Unknown'}</code></p>`;
-            html += `<p><b>Wi-Fi Name (SSID):</b> ${data.wifiSSID || 'Unknown'}</p>`;
-            html += `<p><b>Devices Detected:</b> ~${data.connectedDeviceCount || '0'} (Your computer can see this many)</p>`;
-            html += `</div>`;
-
-            // --- Action Plan ---
-            html += `<div class="result-box"><h4>📋 Your Action Plan</h4>`;
-            html += `<p>Based on this scan, here are your next steps:</p><ul>`;
-
-            if (data.openPorts && data.openPorts.length > 0) {
-                html += `<li><b>URGENT:</b> Disable <i>Remote Management</i> in your router settings.</li>`;
-            }
-            if (data.routerHttpAccess === 'accessible' && data.routerHttpsAccess !== 'accessible') {
-                html += `<li><b>Important:</b> Always use <code>https://${data.gateway}</code> to log into your router.</li>`;
-            }
-            if (data.wifiEncryption && (data.wifiEncryption.includes('WEP') || data.wifiEncryption.includes('Open'))) {
-                html += `<li><b>URGENT:</b> Change your Wi-Fi encryption to WPA2 or WPA3.</li>`;
-            }
-
-            html += `<li><b>Complete the audit:</b> Log into your router at <code>${data.gateway || '192.168.1.1'}</code> to check for default passwords and other settings this scan can't see.</li>`;
-            html += `</ul>`;
-            html += `<br><button onclick="location.reload()">Start Full Guided Checkup for Default Passwords & More</button>`;
-            html += `</div>`;
-
-            resultDiv.innerHTML += html;
-
-        } catch (e) {
-            resultDiv.innerHTML += `<p>Could not parse the script output. Please ensure you copied the entire text correctly.</p><pre>${output}</pre>`;
+        // --- Network Information ---
+        html += `<div class="result-box"><h4>🌐 Network Information</h4>`;
+        html += `<p><b>Router IP:</b> <code>${data.gateway || 'Unknown'}</code> &nbsp;|&nbsp; <b>Public IP:</b> <code>${data.publicIP || 'Unknown'}</code></p>`;
+        html += `<p><b>Your IP:</b> <code>${data.ipAddress || 'Unknown'}</code> &nbsp;|&nbsp; <b>MAC Address:</b> <code>${data.macAddress || 'Unknown'}</code></p>`;
+        html += `<p><b>Connection Type:</b> ${data.connectionType || 'Unknown'} &nbsp;|&nbsp; <b>DNS Servers:</b> <code>${data.dnsServers || 'Unknown'}</code></p>`;
+        if (data.wifiSSID && data.wifiSSID !== "Unknown") {
+            html += `<p><b>Wi-Fi Name (SSID):</b> ${data.wifiSSID || 'Unknown'} &nbsp;|&nbsp; <b>Encryption:</b> ${data.wifiEncryption || 'Unknown'}</p>`;
         }
+        html += `<p><b>Devices Detected:</b> ~${data.connectedDeviceCount || '0'} (Your computer can see this many)</p>`;
+        html += `<p><b>Operating System:</b> ${data.operatingSystem || 'Unknown'} ${data.osVersion || ''}</p>`;
+        html += `</div>`;
+
+        // --- Phase 1 Checks ---
+        html += `<div class="result-box"><h4>🔒 Phase 1: Critical Settings</h4>`;
+
+        // Check 1: Remote Management (Open Ports)
+        if (data.openPorts && data.openPorts.length > 0) {
+            html += `<p style="color: red; font-weight: bold;">❌ CRITICAL: Remote Management likely ENABLED (Ports ${data.openPorts.join(', ')} open)</p>`;
+            html += `<p>Open ports on your router can allow remote access. Common admin ports: 80 (HTTP), 443 (HTTPS), 22 (SSH), 23 (Telnet).</p>`;
+        } else {
+            html += `<p style="color: green;">✅ Remote Management likely DISABLED (No common admin ports open)</p>`;
+        }
+
+        // Check 2: Router Login Security (HTTP vs HTTPS)
+        if (data.routerHttpsAccess === 'accessible') {
+            html += `<p style="color: green;">✅ Secure Router Login (HTTPS) AVAILABLE</p>`;
+        } else if (data.routerHttpAccess === 'accessible') {
+            html += `<p style="color: red;">❌ Router Login INSECURE (HTTP only)</p>`;
+            html += `<p>Your router admin panel is accessible via unencrypted HTTP, which means your login credentials could be intercepted.</p>`;
+        } else {
+            html += `<p>⚠️ Could not automatically access router login page at ${data.gateway}</p>`;
+            html += `<p>This could mean your router's admin interface is not accessible from the network, or it uses a non-standard port.</p>`;
+        }
+
+        // Check 3: Wi-Fi Encryption
+        if (data.wifiEncryption && data.wifiEncryption.includes('WPA3')) {
+            html += `<p style="color: green;">✅ Excellent Wi-Fi Encryption: ${data.wifiEncryption}</p>`;
+        } else if (data.wifiEncryption && data.wifiEncryption.includes('WPA2')) {
+            html += `<p style="color: green;">✅ Good Wi-Fi Encryption: ${data.wifiEncryption}</p>`;
+        } else if (data.wifiEncryption && (data.wifiEncryption.includes('WPA') || data.wifiEncryption.includes('WEP'))) {
+            html += `<p style="color: red;">❌ Outdated Wi-Fi Encryption: ${data.wifiEncryption}</p>`;
+            html += `<p>WPA and WEP encryption have known vulnerabilities and can be cracked relatively easily.</p>`;
+        } else if (data.wifiEncryption && data.wifiEncryption.includes('Open')) {
+            html += `<p style="color: red;">❌ CRITICAL: Open Wi-Fi Network (No Password)</p>`;
+            html += `<p>Your network has no security, allowing anyone to connect and monitor your traffic.</p>`;
+        } else if (data.connectionType === "WiFi") {
+            html += `<p>🔍 Wi-Fi Encryption: Could not auto-detect (${data.wifiEncryption || 'Unknown'})</p>`;
+        }
+        
+        // Check 4: DNS Servers
+        if (data.dnsServers && data.dnsServers !== "Unknown" && data.dnsServers !== "Error retrieving") {
+            const suspiciousDnsPatterns = /(\.|^)(dns|hijack|malicious|free)\.|^10\.|^192\.168\.|^172\.(1[6-9]|2[0-9]|3[0-1])\.|^100\./i;
+            const knownGoodDns = ['8.8.8.8', '8.8.4.4', '1.1.1.1', '1.0.0.1', '208.67.222.222', '208.67.220.220', '9.9.9.9'];
+            const dnsServers = data.dnsServers.split(',');
+            let suspiciousFound = false;
+            let unknownFound = false;
+            
+            dnsServers.forEach(server => {
+                server = server.trim();
+                if (knownGoodDns.includes(server)) {
+                    html += `<p style="color: green;">✅ DNS Server: <code>${server}</code> (Trusted)</p>`;
+                } else if (suspiciousDnsPatterns.test(server)) {
+                    html += `<p style="color: red;">❌ DNS Server: <code>${server}</code> (Suspicious)</p>`;
+                    suspiciousFound = true;
+                } else if (server) {
+                    html += `<p style="color: orange;">🟡 DNS Server: <code>${server}</code> (Unknown)</p>`;
+                    unknownFound = true;
+                }
+            });
+            
+            if (suspiciousFound) {
+                html += `<p>Suspicious DNS servers could indicate DNS hijacking, which can redirect you to malicious sites.</p>`;
+            } else if (unknownFound) {
+                html += `<p>Unknown DNS servers should be verified. Only use DNS servers from trusted providers.</p>`;
+            }
+        }
+        
+        html += `</div>`;
+
+        // --- Action Plan ---
+        html += `<div class="result-box"><h4>📋 Your Action Plan</h4>`;
+        html += `<p>Based on this scan, here are your next steps:</p><ul>`;
+
+        if (data.openPorts && data.openPorts.length > 0) {
+            html += `<li><b>URGENT:</b> Disable <i>Remote Management</i> in your router settings.</li>`;
+        }
+        if (data.routerHttpAccess === 'accessible' && data.routerHttpsAccess !== 'accessible') {
+            html += `<li><b>Important:</b> Always use <code>https://${data.gateway}</code> to log into your router if available.</li>`;
+        }
+        if (data.wifiEncryption && (data.wifiEncryption.includes('WEP') || data.wifiEncryption.includes('Open'))) {
+            html += `<li><b>URGENT:</b> Change your Wi-Fi encryption to WPA2 or WPA3.</li>`;
+        } else if (data.wifiEncryption && data.wifiEncryption.includes('WPA')) {
+            html += `<li><b>Recommended:</b> Upgrade your Wi-Fi encryption to WPA2 or WPA3 if possible.</li>`;
+        }
+        
+        // DNS recommendations
+        if (data.dnsServers && data.dnsServers !== "Unknown" && data.dnsServers !== "Error retrieving") {
+            const dnsServers = data.dnsServers.split(',');
+            let hasSuspicious = false;
+            
+            dnsServers.forEach(server => {
+                server = server.trim();
+                const suspiciousDnsPatterns = /(\.|^)(dns|hijack|malicious|free)\.|^10\.|^192\.168\.|^172\.(1[6-9]|2[0-9]|3[0-1])\.|^100\./i;
+                if (suspiciousDnsPatterns.test(server)) {
+                    hasSuspicious = true;
+                }
+            });
+            
+            if (hasSuspicious) {
+                html += `<li><b>URGENT:</b> Change your DNS settings to use trusted servers like Google (8.8.8.8) or Cloudflare (1.1.1.1).</li>`;
+            }
+        }
+
+        html += `<li><b>Complete the audit:</b> Log into your router at <code>${data.gateway || '192.168.1.1'}</code> to check for default passwords and other settings this scan can't see.</li>`;
+        html += `</ul>`;
+        html += `<br><button onclick="location.reload()">Start Full Guided Checkup for Default Passwords & More</button>`;
+        html += `</div>`;
+
+        resultDiv.innerHTML += html;
+
+    } catch (e) {
+        resultDiv.innerHTML += `<p>Could not parse the script output. Please ensure you copied the entire text correctly.</p><pre>${output}</pre>`;
     }
+}
 
     // New function to simulate a more thorough public IP check
     window.checkPublicIp = function(ip) {
