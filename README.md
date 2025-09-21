@@ -1,5 +1,6 @@
 # WifiS4f3tyC0pi10t
 **Tagline**
+Navigate to https://wifis4f3tyc0pil0t.netlify.app/
 A web-based guide to auditing your home router's security for weak WPA settings, default passwords, and open ports. Useful for students or families who may not realize their home Wi-Fi is insecure.
 
 **Description**
